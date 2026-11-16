@@ -1,5 +1,5 @@
 // Demo mode only: a fake landing page, form endpoint and "CRM" so checks run against real HTTP.
-// Nothing here is used outside `signal serve --demo`.
+// Nothing here is used outside `verax serve --demo`.
 
 export function mountDemo() {
   const crm = new Map();

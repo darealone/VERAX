@@ -80,7 +80,7 @@ export function createService(db, config, { clock = () => Date.now(), fetch: fet
   // ---------- API tokens (for CI pipelines) ----------
   function createToken(actor, name) {
     if (!actor) deny();
-    const token = newToken('sig_');
+    const token = newToken('vxm_');
     const { lastInsertRowid } = db.run('INSERT INTO api_tokens (name, token_hash, user_id, created_at) VALUES (?,?,?,?)', str(name, 80) || 'token', sha(token), actor.id, clock());
     db.audit('token.created', { actorId: actor.id, data: { tokenId: Number(lastInsertRowid), name }, at: clock() });
     return { id: Number(lastInsertRowid), token };

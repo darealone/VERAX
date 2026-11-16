@@ -4,5 +4,5 @@ data/
 *.db-shm
 *.db-wal
 .env
-signal.config.json
+verax.config.json
 .DS_Store

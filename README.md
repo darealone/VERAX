@@ -1,6 +1,6 @@
-# SIGNAL — launch readiness gate
+# VERAX MERIDIAN — launch readiness gate
 
-**Check first. Then launch.** SIGNAL is a small self-hosted tool that tells a team whether a campaign, form, or process handover can go live: **GO**, **BLOCKED**, or **NEEDS REVIEW**. The answer comes from deterministic checks, a named human approval, and an audit trail. It is not a forecast.
+**Check first. Then launch.** VERAX MERIDIAN is a small self-hosted tool that tells a team whether a campaign, form, or process handover can go live: **GO**, **BLOCKED**, or **NEEDS REVIEW**. The answer comes from deterministic checks, a named human approval, and an audit trail. It is not a forecast.
 
 [Deutsche Version](README.de.md)
 
@@ -13,8 +13,8 @@
 ## Quick start
 
 ```bash
-git clone <your-fork-url> signal && cd signal
-node bin/signal.js serve --demo
+git clone <your-fork-url> verax-meridian && cd verax-meridian
+node bin/verax.js serve --demo
 ```
 
 Open http://127.0.0.1:8080. The demo creates three users (password `demo-password-123`) and a sample launch. Its fake CRM drops a required field, so the launch starts **BLOCKED**. Click "Toggle demo CRM mapping" and then "Run all automated checks" to watch it change to **NEEDS REVIEW**. Log in as `sam@example.test` (approver) to approve it and get **GO**.
@@ -22,8 +22,8 @@ Open http://127.0.0.1:8080. The demo creates three users (password `demo-passwor
 ### Real installation
 
 ```bash
-node bin/signal.js init                      # writes signal.config.json
-node bin/signal.js serve --config signal.config.json --host 0.0.0.0 --port 8080
+node bin/verax.js init                      # writes verax.config.json
+node bin/verax.js serve --config verax.config.json --host 0.0.0.0 --port 8080
 ```
 
 The first visit asks you to create the admin account. Afterwards, add your team under **Settings → Team**.
@@ -31,13 +31,13 @@ The first visit asks you to create the admin account. Afterwards, add your team 
 ### Docker
 
 ```bash
-cp examples/signal.config.example.json signal.config.json   # edit it
+cp examples/verax.config.example.json verax.config.json   # edit it
 docker compose up -d
 ```
 
-Data is stored in the `signal-data` volume as one SQLite file. To back up, copy `/data/signal.db` while the container is stopped, or use `sqlite3 .backup`.
+Data is stored in the `verax-data` volume as one SQLite file. To back up, copy `/data/verax.db` while the container is stopped, or use `sqlite3 .backup`.
 
-Put SIGNAL behind HTTPS (for example with Caddy or nginx) and set `SIGNAL_SECURE_COOKIES=1`.
+Put VERAX MERIDIAN behind HTTPS (for example with Caddy or nginx) and set `VERAX_SECURE_COOKIES=1`.
 
 ## How the decision works
 
@@ -55,7 +55,7 @@ Some details:
 - **Reviews cannot override blockers.** Approvers cannot approve a blocked launch, and critical checks cannot be waived.
 - **Approvals are bound to a fingerprint.** The fingerprint is calculated from the launch scope and every check definition. If anyone edits a check or the scope after approval, the approval becomes stale. Re-running checks does not change the fingerprint.
 - **NEEDS REVIEW is never a silent GO.** You can assign a review to a named person with a concrete question and a deadline. An overdue review is flagged; it does not approve anything.
-- **The audit log is append-only and hash-chained.** Run `signal verify-audit` to detect edits or deletions.
+- **The audit log is append-only and hash-chained.** Run `verax verify-audit` to detect edits or deletions.
 
 ## Check types
 
@@ -73,22 +73,22 @@ Configuration notes:
 - Any error, timeout or unexpected response gives the result `unknown`, never `pass`.
 - Paths in `expect` support nesting, for example `results[0].email`. The value `"*"` means "any non-empty value".
 
-See [`examples/signal.config.example.json`](examples/signal.config.example.json) for complete templates. One of them uses manual checks only, for teams that start without API access.
+See [`examples/verax.config.example.json`](examples/verax.config.example.json) for complete templates. One of them uses manual checks only, for teams that start without API access.
 
 ## CI / pipeline gate
 
 Create a token under **Settings → API tokens**, then:
 
 ```bash
-SIGNAL_URL=https://signal.example.com SIGNAL_TOKEN=sig_xxx node bin/signal.js run 12
+VERAX_URL=https://verax.example.com VERAX_TOKEN=vxm_xxx node bin/verax.js run 12
 # exit 0 = GO, 1 = BLOCKED, 2 = NEEDS_REVIEW, 3 = error
 ```
 
-## Configuration (`signal.config.json`)
+## Configuration (`verax.config.json`)
 
 | Key | Default | Meaning |
 |---|---|---|
-| `org.name`, `org.productName`, `org.logoText`, `org.accent` | `Your team`, `SIGNAL`, initials, `#b9fa65` | Branding |
+| `org.name`, `org.productName`, `org.logoText`, `org.accent` | `Your team`, `VERAX MERIDIAN`, initials, `#b9fa65` | Branding |
 | `language` | `en` | Default UI language (`en` or `de`). Each user can switch. |
 | `rules.maxCheckAgeHours` | `24` | Check results older than this count as not verified |
 | `rules.approvalValidDays` | `14` | Approvals expire after this many days |
@@ -110,7 +110,7 @@ SIGNAL_URL=https://signal.example.com SIGNAL_TOKEN=sig_xxx node bin/signal.js ru
 - Passwords are hashed with scrypt. Sessions use HttpOnly, SameSite=Strict cookies, and API calls must send JSON, which protects against CSRF. Logins are rate-limited.
 - The Content-Security-Policy allows only the app's own scripts. All user text is rendered as text, never as HTML.
 - Free text from notes, evidence or API responses is stored and shown as data. It never changes rules or permissions.
-- Checks can call any http(s) URL that you configure. Only let trusted team members define checks, and run SIGNAL in a network segment that suits this.
+- Checks can call any http(s) URL that you configure. Only let trusted team members define checks, and run VERAX MERIDIAN in a network segment that suits this.
 
 ## Development
 
@@ -119,7 +119,7 @@ npm test            # node:test, no dependencies
 npm run dev         # demo mode
 ```
 
-Project layout: `src/rules.js` (decision rules), `src/checks/` (check runners), `src/service.js` (permissions, approvals, audit), `src/server.js` (HTTP API), `public/` (web UI), `bin/signal.js` (CLI).
+Project layout: `src/rules.js` (decision rules), `src/checks/` (check runners), `src/service.js` (permissions, approvals, audit), `src/server.js` (HTTP API), `public/` (web UI), `bin/verax.js` (CLI).
 
 ## Status
 

@@ -49,7 +49,7 @@ function assertUrl(raw) {
 
 async function request({ url, method = 'GET', headers = {}, body, timeoutMs = 10_000 }, fetchImpl) {
   assertUrl(url);
-  const init = { method, headers: { 'user-agent': 'signal-launch-gate/0.1', ...headers }, redirect: 'follow', signal: AbortSignal.timeout(timeoutMs) };
+  const init = { method, headers: { 'user-agent': 'verax-meridian/0.1', ...headers }, redirect: 'follow', signal: AbortSignal.timeout(timeoutMs) };
   if (body !== undefined) {
     if (typeof body === 'string') init.body = body;
     else { init.body = JSON.stringify(body); init.headers['content-type'] ??= 'application/json'; }
@@ -147,7 +147,7 @@ const runners = {
 export async function runCheck(check, { fetch: fetchImpl = globalThis.fetch, now = Date.now(), sleep = ms => new Promise(r => setTimeout(r, ms)), testId } = {}) {
   const runner = runners[check.type];
   const t0 = Date.now();
-  const ctx = { fetch: fetchImpl, now, sleep, testId: testId ?? `signal-test-${randomUUID().slice(0, 8)}` };
+  const ctx = { fetch: fetchImpl, now, sleep, testId: testId ?? `verax-test-${randomUUID().slice(0, 8)}` };
   if (!runner) return { status: 'unknown', summary: `Unknown check type "${check.type}"`, evidence: {}, durationMs: 0 };
   try {
     const out = await runner(check.config ?? {}, ctx);

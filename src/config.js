@@ -1,11 +1,11 @@
 // Team configuration: branding, language, rule settings and reusable check templates.
-// Loaded from signal.config.json (path via --config or SIGNAL_CONFIG). Everything is optional.
+// Loaded from verax.config.json (path via --config or VERAX_CONFIG). Everything is optional.
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { validateCheck } from './checks/index.js';
 
 export const DEFAULTS = Object.freeze({
-  org: { name: 'Your team', productName: 'SIGNAL', accent: '#b9fa65', logoText: '' },
+  org: { name: 'Your team', productName: 'VERAX MERIDIAN', accent: '#b9fa65', logoText: '' },
   language: 'en',
   rules: { maxCheckAgeHours: 24, approvalValidDays: 14, fourEyes: true, reviewDefaultDays: 3 },
   scheduler: { recheckMinutes: 0 },

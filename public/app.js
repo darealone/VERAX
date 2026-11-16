@@ -1,4 +1,4 @@
-// SIGNAL web UI. Plain DOM, no framework, no build step.
+// VERAX MERIDIAN web UI. Plain DOM, no framework, no build step.
 // All user-provided text is inserted with textContent (never innerHTML).
 import { t, setLang, getLang, fmtDate } from './i18n.js';
 
@@ -43,6 +43,7 @@ async function act(btn, fn) {
 }
 const formData = form => Object.fromEntries(new FormData(form).entries());
 const badge = status => h('span', { class: `badge s-${status}`, text: t('st_' + status) });
+const initials = name => (name.trim().split(/\s+/).length > 1 ? name.trim().split(/\s+/).map(w => w[0]).join('') : name.slice(0, 2)).slice(0, 3).toUpperCase();
 const canApprove = () => S.me && (S.me.role === 'admin' || S.me.role === 'approver');
 
 // ---------- shell ----------
@@ -50,7 +51,7 @@ function applyBranding() {
   const { org } = S.config;
   document.documentElement.style.setProperty('--accent', org.accent);
   $('#product').textContent = org.productName; $('#org').textContent = org.name;
-  $('#logo').textContent = org.logoText || org.productName.slice(0, 2).toUpperCase();
+  $('#logo').textContent = org.logoText || initials(org.productName);
   document.title = org.productName;
 }
 function shell() {
@@ -62,7 +63,7 @@ function shell() {
   $('#who').textContent = `${S.me.name} · ${t('role_' + S.me.role)}`;
   $('#logout').textContent = t('logout');
 }
-$('#lang').addEventListener('click', () => { setLang(getLang() === 'en' ? 'de' : 'en'); try { localStorage.setItem('signal.lang', getLang()); } catch {} render(); });
+$('#lang').addEventListener('click', () => { setLang(getLang() === 'en' ? 'de' : 'en'); try { localStorage.setItem('verax.lang', getLang()); } catch {} render(); });
 $('#logout').addEventListener('click', async () => { await api('/logout', { method: 'POST' }).catch(() => {}); S.me = null; location.hash = '#/'; render(); });
 window.addEventListener('hashchange', () => render());
 
@@ -85,7 +86,7 @@ function authCard(title, sub, fields, submitLabel, onSubmit) {
   const form = h('form', { class: 'form' }, ...fields, h('button', { class: 'primary', type: 'submit', text: submitLabel }));
   form.addEventListener('submit', e => { e.preventDefault(); act(form.querySelector('button[type=submit]'), () => onSubmit(formData(form))); });
   main.replaceChildren(h('div', { class: 'auth' }, h('div', { class: 'panel stack' },
-    h('div', { class: 'row' }, h('span', { class: 'logo', text: S.config.org.logoText || S.config.org.productName.slice(0, 2).toUpperCase() }), h('span', { class: 'kicker', text: S.config.org.name })),
+    h('div', { class: 'row' }, h('span', { class: 'logo', text: S.config.org.logoText || initials(S.config.org.productName) }), h('span', { class: 'kicker', text: S.config.org.name })),
     h('h1', { text: title }), sub && h('p', { class: 'sub', text: sub }), form,
     h('button', { class: 'ghost small', type: 'button', onclick: () => $('#lang').click(), text: getLang() === 'en' ? 'Deutsch' : 'English' }))));
   form.querySelector('input')?.focus();
@@ -359,7 +360,7 @@ async function viewSettings() {
 // ---------- boot ----------
 (async function boot() {
   S.config = await api('/config');
-  let saved = null; try { saved = localStorage.getItem('signal.lang'); } catch {}
+  let saved = null; try { saved = localStorage.getItem('verax.lang'); } catch {}
   setLang(saved || S.config.language);
   applyBranding();
   if (!S.config.needsSetup) { try { S.me = (await api('/me')).user; } catch { S.me = null; } }

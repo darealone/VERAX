@@ -35,7 +35,7 @@ export function userFromRequest(db, req, now = Date.now()) {
     if (row) { db.run('UPDATE api_tokens SET last_used_at = ? WHERE id = ?', now, row.token_id); return { ...strip(row), via: 'token' }; }
     return null;
   }
-  const token = parseCookies(req.headers.cookie).signal_session;
+  const token = parseCookies(req.headers.cookie).verax_session;
   if (!token) return null;
   const row = db.get(`SELECT u.* FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ? AND s.expires_at > ? AND u.disabled = 0`, sha(token), now);
   return row ? { ...strip(row), via: 'session', sessionToken: token } : null;
@@ -50,7 +50,7 @@ export function parseCookies(header = '') {
 }
 
 export function sessionCookie(token, { secure, clear } = {}) {
-  const parts = [`signal_session=${clear ? '' : token}`, 'Path=/', 'HttpOnly', 'SameSite=Strict', `Max-Age=${clear ? 0 : SESSION_DAYS * 86400}`];
+  const parts = [`verax_session=${clear ? '' : token}`, 'Path=/', 'HttpOnly', 'SameSite=Strict', `Max-Age=${clear ? 0 : SESSION_DAYS * 86400}`];
   if (secure) parts.push('Secure');
   return parts.join('; ');
 }
