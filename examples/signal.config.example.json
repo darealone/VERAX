@@ -1,0 +1,79 @@
+{
+  "org": {
+    "name": "Example GmbH",
+    "productName": "SIGNAL",
+    "accent": "#b9fa65",
+    "logoText": "EX"
+  },
+  "language": "en",
+  "rules": {
+    "maxCheckAgeHours": 24,
+    "approvalValidDays": 14,
+    "fourEyes": true,
+    "reviewDefaultDays": 3
+  },
+  "scheduler": {
+    "recheckMinutes": 0
+  },
+  "templates": [
+    {
+      "id": "lead-campaign",
+      "name": "Lead campaign (landing page → form → CRM)",
+      "description": "Checks the handover chain from click to sales before money is spent.",
+      "checks": [
+        {
+          "label": "Landing page reachable and correct",
+          "type": "http",
+          "critical": true,
+          "config": { "url": "https://www.example.com/landing", "expectBodyContains": "Register" }
+        },
+        {
+          "label": "Form → CRM required fields",
+          "type": "roundtrip",
+          "critical": true,
+          "config": {
+            "submit": {
+              "url": "https://forms.example.com/submit",
+              "method": "POST",
+              "body": { "email": "{{testId}}@example.test", "company_size": "50-200", "is_test": true }
+            },
+            "verify": {
+              "url": "https://crm.example.com/api/contacts?email={{testId}}@example.test",
+              "headers": { "authorization": "Bearer ${ENV:CRM_READ_TOKEN}" },
+              "waitMs": 3000,
+              "retries": 3
+            },
+            "expect": { "results[0].email": "{{testId}}@example.test", "results[0].company_size": "50-200" }
+          }
+        },
+        {
+          "label": "Routing rule assigns the right queue",
+          "type": "json",
+          "critical": true,
+          "config": {
+            "url": "https://crm.example.com/api/routing/preview?source=campaign",
+            "headers": { "authorization": "Bearer ${ENV:CRM_READ_TOKEN}" },
+            "expect": { "queue": "inbound-sales" }
+          }
+        },
+        {
+          "label": "Tracking & attribution validated",
+          "type": "manual",
+          "critical": false,
+          "config": { "instructions": "Submit a test conversion and confirm it appears with campaign parameters." }
+        }
+      ]
+    },
+    {
+      "id": "manual-basic",
+      "name": "Manual checklist (no integrations)",
+      "description": "For teams that start without API access: every check is confirmed by a named person with evidence.",
+      "checks": [
+        { "label": "Call-to-action leads to the right page", "type": "manual", "critical": true, "config": { "instructions": "Click every CTA variant and note the final URL." } },
+        { "label": "Test contact arrives in CRM with all required fields", "type": "manual", "critical": true, "config": { "instructions": "Submit a test contact marked as test and compare stored fields." } },
+        { "label": "Test contact is routed to the right owner", "type": "manual", "critical": true, "config": { "instructions": "Check owner/queue of the test contact." } },
+        { "label": "Measurement validated", "type": "manual", "critical": false, "config": { "instructions": "Confirm conversion tracking or document the accepted gap." } }
+      ]
+    }
+  ]
+}

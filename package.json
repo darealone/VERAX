@@ -1,0 +1,37 @@
+{
+  "name": "signal-launch-gate",
+  "version": "0.1.0",
+  "description": "Self-hosted launch readiness gate: deterministic checks, named approvals and an audit trail before a campaign or process goes live.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "bin": {
+    "signal": "bin/signal.js"
+  },
+  "main": "src/server.js",
+  "files": [
+    "bin",
+    "src",
+    "public",
+    "examples",
+    "README.md",
+    "README.de.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "start": "node bin/signal.js serve",
+    "dev": "node bin/signal.js serve --demo",
+    "test": "node --disable-warning=ExperimentalWarning --test \"test/*.test.js\""
+  },
+  "keywords": [
+    "launch",
+    "readiness",
+    "governance",
+    "approval",
+    "audit",
+    "self-hosted"
+  ]
+}
