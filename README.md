@@ -2,7 +2,7 @@
 
 **Check first. Then launch.** VERAX MERIDIAN is a small self-hosted tool that tells a team whether a campaign, form, or process handover can go live: **GO**, **BLOCKED**, or **NEEDS REVIEW**. The answer comes from deterministic checks, a named human approval, and an audit trail. It is not a forecast.
 
-[Deutsche Version](README.de.md)
+[Deutsche Version](README.de.md) · [Product page & interactive simulation](https://darealone.github.io/aether-hive/verax/) · Part of [Aether Hive](https://darealone.github.io/aether-hive/)
 
 - **Zero dependencies.** Node.js 22.13+ and its built-in SQLite. No `npm install`, no native modules.
 - **Self-hosted.** Your data stays on your server. There are no telemetry calls and no external services.
@@ -13,7 +13,7 @@
 ## Quick start
 
 ```bash
-git clone <your-fork-url> verax-meridian && cd verax-meridian
+git clone https://github.com/darealone/VERAX.git && cd VERAX
 node bin/verax.js serve --demo
 ```
 

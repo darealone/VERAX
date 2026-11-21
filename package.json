@@ -4,6 +4,14 @@
   "description": "Self-hosted launch readiness gate: deterministic checks, named approvals and an audit trail before a campaign or process goes live.",
   "type": "module",
   "license": "Apache-2.0",
+  "homepage": "https://darealone.github.io/aether-hive/verax/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darealone/VERAX.git"
+  },
+  "bugs": {
+    "url": "https://github.com/darealone/VERAX/issues"
+  },
   "bin": {
     "verax": "bin/verax.js"
   },

@@ -2,11 +2,12 @@
 
 **Erst prüfen. Dann starten.** VERAX MERIDIAN ist ein kleines, selbst gehostetes Werkzeug. Es sagt einem Team, ob eine Kampagne, ein Formular oder eine Prozessübergabe live gehen darf: **GO**, **BLOCKED** oder **NEEDS REVIEW**. Die Antwort beruht auf deterministischen Prüfungen, einer namentlichen Freigabe und einem lückenlosen Protokoll. Sie ist keine Prognose.
 
-[English version](README.md)
+[English version](README.md) · [Produktseite mit Simulation](https://darealone.github.io/aether-hive/verax/)
 
 ## Schnellstart
 
 ```bash
+git clone https://github.com/darealone/VERAX.git && cd VERAX
 node bin/verax.js serve --demo
 ```
 
